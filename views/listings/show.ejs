@@ -1,0 +1,123 @@
+<% layout("/layouts/boilerplate") %>
+
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-8 offset-2">
+                <h3 class="mb-4"><%= listing.title %></h3>
+
+                <!-- Card for listing -->
+                <div class="card mb-4 shadow-sm">
+                    <img 
+                        src="<%= listing.image && listing.image.url ? listing.image.url : (listing.image ? listing.image : '/images/default.jpg') %>" 
+                        class="card-img-top show-img" 
+                        alt="Listing Image" 
+                        style="height: 300px; object-fit: cover;"
+                    >
+                    <div class="card-body">
+                        <p class="card-text"><%= listing.description ? listing.description : 'No description available.' %></p>
+                        <p class="card-text"><strong>Price:</strong> &#x20B9;<%= listing.price ? listing.price.toLocaleString("en-IN") : 'N/A' %></p>
+                        <p class="card-text"><strong>Location:</strong> <%= listing.location ? listing.location : 'Unknown' %></p>
+                        <p class="card-text"><strong>Country:</strong> <%= listing.country ? listing.country : 'Unknown' %></p>
+                        <p class="card-text"><strong>Owner:</strong> <%= listing.owner ? listing.owner.username : 'Unknown' %></p>
+                    </div>
+                </div>
+
+
+
+
+                
+                <!-- Edit & Delete Buttons for Listing -->
+                <div class="d-flex mb-4">
+                    <a href="/listings/<%= listing._id %>/edit" class="btn btn-warning me-2">Edit</a>
+
+                    <form method="POST" action="/listings/<%= listing._id %>?_method=DELETE">
+                        <button class="btn btn-danger" type="submit">Delete</button>
+                    </form>
+                </div>
+               
+                <% if(currUser) { %>
+                <!-- Review Form Section -->
+                <div class="mb-5">
+                    <hr/>
+                    <h4 class="mb-3">Leave a Review</h4>
+                    <form method="POST" action="/listings/<%= listing._id %>/reviews" class="needs-validation" novalidate>
+
+                        <!-- Star Rating -->
+                        <div class="mb-3">
+                            <label class="form-label">Rating</label>
+                            <div class="star-rating">
+                                <input type="radio" name="review[rating]" id="star5" value="5" required>
+                                <label for="star5" title="5 stars">&#9733;</label>
+                                <input type="radio" name="review[rating]" id="star4" value="4">
+                                <label for="star4" title="4 stars">&#9733;</label>
+                                <input type="radio" name="review[rating]" id="star3" value="3">
+                                <label for="star3" title="3 stars">&#9733;</label>
+                                <input type="radio" name="review[rating]" id="star2" value="2">
+                                <label for="star2" title="2 stars">&#9733;</label>
+                                <input type="radio" name="review[rating]" id="star1" value="1">
+                                <label for="star1" title="1 star">&#9733;</label>
+                            </div>
+                            <div class="invalid-feedback d-block">Please select a rating.</div>
+                        </div>
+                  
+                        <!-- Comment -->
+                        <div class="mb-3">
+                            <label for="comment" class="form-label">Comments</label>
+                            <textarea name="review[comment]" id="comment" cols="30" rows="5" class="form-control" placeholder="Write your comments here" required></textarea>
+                            <div class="invalid-feedback">Comment cannot be empty.</div>
+                        </div>
+
+                        <button class="btn btn-outline-dark" type="submit">Submit</button>
+                    </form>
+                </div>
+            <%}%>
+                <!-- All Reviews Section -->
+                <div class="mb-5">
+                    <hr/>
+                    <h4 class="mb-3">All Reviews</h4>
+                    <% if (listing.reviews.length === 0) { %>
+                        <p class="text-muted">No reviews yet.</p>
+                    <% } else { %>
+                        <% listing.reviews.forEach(review => { %>
+                            <div class="card mb-3 shadow-sm">
+                                <div class="card-body">
+                                    <h6><%= review.author.username%></h6>
+                                    <h6 class="card-subtitle mb-2 text-warning">
+                                        <% for(let i=0;i<review.rating;i++){ %>&#9733;<% } %>
+                                        <% for(let i=review.rating;i<5;i++){ %>&#9734;<% } %>
+                                    </h6>
+                                    <p class="card-text"><%= review.comment %></p>
+                                    <!-- Delete Button -->
+                                    <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE" class="mt-2">
+                                        <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        <% }) %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .star-rating { direction: rtl; font-size: 1.8rem; display: inline-flex; }
+        .star-rating input { display: none; }
+        .star-rating label { color: #ccc; cursor: pointer; transition: color 0.2s; }
+        .star-rating input:checked ~ label, .star-rating label:hover, .star-rating label:hover ~ label { color: #ffc107; }
+    </style>
+
+    <script>
+        (() => {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) { event.preventDefault(); event.stopPropagation(); }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+</body>

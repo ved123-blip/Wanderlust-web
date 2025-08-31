@@ -1,0 +1,73 @@
+<% layout("/layouts/boilerplate") %>
+
+<!-- Flash Messages -->
+<%- include("../partials/flash") %>
+
+<div class="row">
+  <h1 class="text-center mb-4">Login to Wanderlust</h1>
+  <div class="col-6 offset-3">
+    <form action="/login" method="POST" class="needs-validation" novalidate>
+      
+      <!-- Username -->
+      <div class="mb-3">
+        <label for="username" class="form-label">Username</label>
+        <input 
+          name="username" 
+          id="username"
+          type="text" 
+          class="form-control" 
+          required
+        >
+        <div class="valid-feedback">
+          Looks good!
+        </div>
+        <div class="invalid-feedback">
+          Please enter your username.
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input 
+          name="password" 
+          id="password"
+          type="password" 
+          class="form-control" 
+          required
+        >
+        <div class="valid-feedback">
+          Password entered.
+        </div>
+        <div class="invalid-feedback">
+          Please enter your password.
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn btn-success w-100">Login</button>
+    </form>
+
+    <!-- Extra Links -->
+    <div class="text-center mt-3">
+      <p>Don't have an account? <a href="/signup">Sign up here</a></p>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap Validation Script -->
+<script>
+(() => {
+  'use strict'
+  const forms = document.querySelectorAll('.needs-validation')
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+</script>

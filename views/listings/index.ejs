@@ -1,0 +1,163 @@
+<% layout("/layouts/boilerplate")%> 
+<style>
+  /* Filters Row */
+  #filters {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 1rem 0;
+  }
+
+  /* Scrollable Filter Buttons */
+  .filter-list {
+    display: flex;
+    gap: 2rem;
+    overflow-x: auto;
+    scrollbar-width: thin;         
+    scrollbar-color: #ccc transparent;
+    flex: 1;
+  }
+
+  /* Chrome, Edge, Safari */
+  .filter-list::-webkit-scrollbar {
+    height: 6px;
+  }
+  .filter-list::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .filter-list::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+  }
+  .filter-list::-webkit-scrollbar-thumb:hover {
+    background: #999;
+  }
+
+  /* Filter Button */
+  .filter-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    color: #717171;
+    font-size: 0.85rem;
+    transition: all 0.2s ease;
+  }
+  .filter-btn i {
+    font-size: 1.4rem;
+    margin-bottom: 0.3rem;
+  }
+  .filter-btn:hover {
+    color: #000;
+    border-bottom: 2px solid #000;
+    padding-bottom: 0.2rem;
+  }
+
+  /* Tax toggle stays on the right */
+  .tax-toggle {
+    border: 1px solid black;
+    border-radius: 1rem;
+    height: 3.5rem;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    margin-left: 2rem;
+    white-space: nowrap;
+  }
+
+  .tax-info {
+    display: none;
+  }
+</style>
+
+<body>
+  <!-- Filters Section -->
+  <div id="filters">
+    <!-- Scrollable filter buttons -->
+    <div class="filter-list">
+      <div class="filter-btn">
+        <i class="fa-solid fa-fire"></i>
+        <span>Trending</span>
+      </div>
+      <div class="filter-btn">
+        <i class="fa-solid fa-bed"></i>
+        <span>Rooms</span>
+      </div>
+      <div class="filter-btn">
+        <i class="fa-solid fa-mountain-sun"></i>
+        <span>Nature</span>
+      </div>
+      <div class="filter-btn">
+        <i class="fa-solid fa-umbrella-beach"></i>
+        <span>Beach</span>
+      </div>
+      <div class="filter-btn">
+        <i class="fa-solid fa-city"></i>
+        <span>City</span>
+      </div>
+      <div class="filter-btn">
+        <i class="fa-solid fa-person-hiking"></i>
+        <span>Adventure</span>
+      </div>
+      <div class="filter-btn">
+        <i class="fa-solid fa-spa"></i>
+        <span>Spa</span>
+      </div>
+      <div class="filter-btn">
+        <i class="fa-solid fa-mug-saucer"></i>
+        <span>Cafes</span>
+      </div>
+      <div class="filter-btn">
+        <i class="fa-solid fa-champagne-glasses"></i>
+        <span>Nightlife</span>
+      </div>
+      <div class="filter-btn">
+        <i class="fa-solid fa-tree"></i>
+        <span>Parks</span>
+      </div>
+    </div>
+
+    <!-- Tax toggle on the right -->
+    <div class="tax-toggle">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="switchCheckDefault">
+        <label class="form-check-label" for="switchCheckDefault">Display total after Taxes</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Listings Section -->
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+    <% for (let listing of allListings) { %>
+      <a href="/listings/<%= listing._id %>" class="listing-link">
+        <div class="card col">
+          <img 
+            src="<%= listing.image.url ? listing.image.url : listing.image %>" 
+            class="card-img-top" 
+            alt="listing-image"
+            style="height: 20rem; object-fit: cover;"
+          >
+          <div class="card-body">
+            <p class="card-text">
+              <b><%= listing.title %><br></b>
+              ₹<%= listing.price ? listing.price.toLocaleString("en-IN") : 'N/A' %>/night
+              <i class="tax-info">&nbsp;&nbsp;+18% GST </i>
+            </p>
+          </div>
+        </div>
+      </a>
+    <% } %>
+  </div>
+</body>
+
+<script>
+  let taxSwitch = document.getElementById("switchCheckDefault");
+  taxSwitch.addEventListener("change", () => {
+    let taxInfo = document.getElementsByClassName("tax-info");
+    for (let info of taxInfo) {
+      info.style.display = taxSwitch.checked ? "inline" : "none";
+    }
+  });
+</script>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wanderlust</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <!-- Custom CSS -->
+  <style>
+    .add-btn {
+      background-color: #fe424d !important;
+      border: none !important;
+    }
+    .img-preview {
+      max-width: 250px;
+      max-height: 200px;
+      margin-top: 10px;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+  </style>
+</head>
+<body class="container mt-4">
+  <h3 class="mb-4">Edit your Listing</h3>
+
+  <form method="POST" action="/listings/<%= listing._id %>?_method=PUT" 
+        class="row g-3 needs-validation" 
+        novalidate 
+        enctype="multipart/form-data">
+
+    <div class="col-12">
+      <label for="title" class="form-label">Title</label>
+      <input name="listing[title]" type="text" value="<%= listing.title %>" class="form-control" required>
+      <div class="invalid-feedback">Please enter a title.</div>
+    </div>
+
+    <div class="col-12">
+      <label for="description" class="form-label">Description</label>
+      <textarea name="listing[description]" class="form-control" required><%= listing.description %></textarea>
+      <div class="invalid-feedback">Please enter a description.</div>
+    </div>
+
+    <div class="col-12">
+      <label for="image" class="form-label">Upload New Image</label>
+      <input id="imageInput" name="listing[image]" class="form-control" type="file" accept="image/*">
+      <div class="invalid-feedback">Please provide an image.</div>
+
+      <!-- Current Image -->
+      <% if (listing.image && listing.image.url) { %>
+        <p class="mt-2">Current Image:</p>
+        <img src="<%= listing.image.url %>" alt="Current Image" class="img-preview">
+      <% } %>
+
+      <!-- New Image Preview -->
+      <p class="mt-2">New Image Preview:</p>
+      <img id="previewImage" class="img-preview" style="display:none;" alt="Image Preview">
+    </div>
+
+    <div class="col-md-4">
+      <label for="price" class="form-label">Price</label>
+      <input name="listing[price]" type="number" value="<%= listing.price %>" class="form-control" required min="1">
+      <div class="invalid-feedback">Please enter a valid price.</div>
+    </div>
+
+    <div class="col-md-8">
+      <label for="location" class="form-label">Location</label>
+      <input name="listing[location]" value="<%= listing.location %>" type="text" class="form-control" required>
+      <div class="invalid-feedback">Please enter a location.</div>
+    </div>
+
+    <div class="col-12">
+      <label for="country" class="form-label">Country</label>
+      <input name="listing[country]" value="<%= listing.country %>" type="text" class="form-control" required>
+      <div class="invalid-feedback">Please enter a country.</div>
+    </div>
+
+    <div class="col-12">
+      <button type="submit" class="btn add-btn text-white px-4">Edit</button>
+    </div>
+  </form>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Form Validation + Image Preview Script -->
+  <script>
+    (() => {
+      'use strict'
+      const forms = document.querySelectorAll('.needs-validation')
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+
+    // Image Preview
+    const imageInput = document.getElementById("imageInput");
+    const previewImage = document.getElementById("previewImage");
+
+    imageInput.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          previewImage.src = e.target.result;
+          previewImage.style.display = "block";
+        }
+        reader.readAsDataURL(file);
+      } else {
+        previewImage.style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>
