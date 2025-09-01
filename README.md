@@ -30,6 +30,4 @@ Authentication: Passport.js, bcrypt
 
 Image Hosting: Cloudinary
 
-Maps: Mapbox / alternative free mapping API
 
-Deployment: Render
